@@ -2,6 +2,67 @@
 
 A Python console application for real-time monitoring of disk usage and I/O performance on Linux systems.
 
+## License
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+**Copyright (C) 2025 Andreas Huemmer <andreas.huemmer@adminsend.de>**
+
+## Changelog
+
+### Version 1.0.0 (2025-12-22)
+
+#### Added
+- **Command Line Interface**: Added support for command line arguments
+  - `--net` flag to include network mounted drives (NFS, CIFS, SMB, SSHFS, etc.)
+  - `--time SECONDS` option to set custom refresh interval (default: 2.0s, minimum: 0.1s)
+- **Network Filesystem Support**: Enhanced collector to properly handle network drives
+  - Automatic detection of network filesystem types (NFS, CIFS, SMB, SSHFS, GlusterFS)
+  - Configurable inclusion/exclusion of network drives
+- **GPL v3 Licensing**: Added comprehensive GPL v3 license headers to all source files
+- **Python Development Framework**: Applied standardized Python development practices
+  - Virtual environment support with automated setup
+  - PEP 8 compliance with Black formatting and Flake8 linting
+  - Modern Python packaging with pyproject.toml
+  - Comprehensive development tooling (tox, pre-commit, mypy)
+- **Author-Copyright Headers**: Enhanced all source files with detailed metadata
+  - Author attribution and copyright notices
+  - Version tracking and changelog information
+  - GPL v3 license headers with proper formatting
+- **Enhanced Documentation**: Updated README with comprehensive setup and usage instructions
+
+#### Changed
+- **Flexible Refresh Interval**: Replaced fixed 2-second refresh with configurable timing
+- **Improved Startup Messages**: Added informative messages about configuration and network drive inclusion
+- **Enhanced Error Handling**: Better validation for command line arguments and system access
+- **Code Quality**: 100% PEP 8 compliance with automated formatting and linting
+
+#### Technical Details
+- **Architecture**: Clean modular design with separation of concerns
+  - `monitor.py`: Main controller with monitoring loop and signal handling
+  - `collector.py`: System data collection from Linux `/proc/diskstats` and psutil
+  - `models.py`: Type-safe data structures using dataclasses
+  - `formatter.py`: Data formatting and rate calculations
+  - `display.py`: Console output with tabular formatting
+- **Testing**: Comprehensive property-based testing using Hypothesis framework
+- **Compatibility**: Python 3.8+ with Linux system requirements (currently using Python 3.12.7)
+- **Dependencies**: psutil for cross-platform disk operations, comprehensive dev dependencies
+- **Development Environment**: Virtual environment with full development toolchain
+
+#### Initial Features
+- **Real-time Monitoring**: Live disk usage and I/O performance tracking
+- **Comprehensive Metrics**: 
+  - Disk usage (used, available, total space, usage percentage)
+  - I/O performance (read/write operations per second, throughput in KB/s)
+- **Clean Console Interface**: Formatted table output with proper column alignment
+- **Graceful Shutdown**: Handles Ctrl+C and system signals properly
+- **Robust Error Handling**: Continues running even when encountering system access errors
+- **Smart Filtering**: Automatically excludes special filesystems (tmpfs, devtmpfs, squashfs, overlay)
+
 ## Features
 
 - **Real-time disk usage monitoring** - Shows used, available, and total space for all mounted disks
@@ -19,11 +80,67 @@ A Python console application for real-time monitoring of disk usage and I/O perf
 
 ## Installation
 
+### Prerequisites
+
+- Python 3.8 or higher (currently tested with Python 3.12.7)
+- Linux operating system
+- Virtual environment support (recommended)
+
+### Quick Setup
+
 1. Clone or download this repository
-2. Install dependencies:
+2. Create and activate a virtual environment:
    ```bash
-   pip install -r requirements.txt
+   python -m venv venv
+   source venv/bin/activate  # On Linux/macOS
+   # or
+   venv\Scripts\activate     # On Windows
    ```
+3. Install the application:
+   ```bash
+   pip install -e .
+   ```
+
+### Development Setup
+
+For development work, install with development dependencies:
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate
+
+# Install development dependencies
+pip install -e ".[dev,test]"
+pip install -r requirements-dev.txt
+
+# Optional: Install pre-commit hooks
+pre-commit install
+```
+
+### Using Make (Recommended)
+
+The project includes a comprehensive Makefile for common development tasks:
+
+```bash
+# Setup development environment
+make dev-setup
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Run the application
+make run
+
+# Run tests
+make test
+
+# Check code quality
+make check
+
+# Format code
+make format
+```
 
 ## Usage
 
@@ -37,9 +154,35 @@ The application will start monitoring and display a real-time table of disk metr
 
 ### Command Line Options
 
-The application currently runs with default settings:
+- `--net`: Include network mounted drives (NFS, CIFS, etc.) in monitoring
+- `--time SECONDS`: Set refresh interval in seconds (default: 2.0, minimum: 0.1)
+
+#### Examples
+
+```bash
+# Default monitoring (2s refresh, no network drives)
+python -m disk_monitor
+
+# Include network mounted drives
+python -m disk_monitor --net
+
+# Refresh every 5 seconds
+python -m disk_monitor --time 5
+
+# Include network drives and refresh every 1 second
+python -m disk_monitor --net --time 1
+
+# Fast refresh for detailed monitoring
+python -m disk_monitor --time 0.5
+```
+
+### Default Behavior
+
+The application runs with these default settings:
 - Refresh interval: 2 seconds
-- Displays all mounted disks (excluding special filesystems like tmpfs, devtmpfs)
+- Network drives: Excluded (only local disks shown)
+- Displays all mounted local disks (excluding special filesystems like tmpfs, devtmpfs)
+- Network filesystems (NFS, CIFS, SMB, SSHFS, etc.) are filtered out unless `--net` is specified
 
 ## Sample Output
 

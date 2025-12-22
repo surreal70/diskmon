@@ -1,0 +1,4 @@
+# file: /home/andreas/kiro/diskmon/disk_monitor/collector.py
+# hypothesis_version: 6.148.7
+
+[0.0, 100, 512, '/proc/diskstats', 'cifs', 'devtmpfs', 'fuse.glusterfs', 'fuse.sshfs', 'loop', 'nfs', 'nfs4', 'overlay', 'r', 'ram', 'smb', 'smbfs', 'squashfs', 'tmpfs']

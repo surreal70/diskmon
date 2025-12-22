@@ -1,0 +1,31 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E203, W503, E501
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist,
+    .eggs,
+    *.egg-info,
+    .tox,
+    .coverage,
+    .pytest_cache,
+    .mypy_cache
+
+# Error codes to ignore:
+# E203: whitespace before ':' (conflicts with black)
+# W503: line break before binary operator (conflicts with black)
+# E501: line too long (handled by black)
+
+per-file-ignores =
+    __init__.py:F401
+    tests/*:S101,S311
+
+# Additional checks
+select = E,W,F,C,N
+doctests = True
+statistics = True
+count = True

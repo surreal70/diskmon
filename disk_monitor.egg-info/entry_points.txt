@@ -1,0 +1,2 @@
+[console_scripts]
+disk-monitor = disk_monitor.__main__:main
